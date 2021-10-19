@@ -18,6 +18,7 @@
 
 package org.bspfsystems.basicmojangapi;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -137,6 +138,6 @@ final class SimpleAccountHistory implements AccountHistory {
     @Override
     @NotNull
     public Iterator<Map.Entry<Long, String>> iterator() {
-        return this.nameHistory.entrySet().iterator();
+        return Collections.unmodifiableMap(this.nameHistory).entrySet().iterator();
     }
 }
