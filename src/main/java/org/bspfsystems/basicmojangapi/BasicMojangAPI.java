@@ -131,12 +131,11 @@ public final class BasicMojangAPI {
             return null;
         }
         
-        final String rawData = BasicMojangAPI.readData(connection.getInputStream());
         final JSONObject responseData;
         try {
-            responseData = JSONParser.deserializeObject(rawData);
+            responseData = JSONParser.deserializeObject(BasicMojangAPI.readData(connection.getInputStream()));
         } catch (JSONException e) {
-            throw new IOException("Unable to parse data from the Mojang API: " + rawData, e);
+            throw new IOException("Unable to parse data from the Mojang API.", e);
         }
         if (responseData == null) {
             return null;
@@ -207,13 +206,12 @@ public final class BasicMojangAPI {
         connection.setDoOutput(true);
         
         connection.getOutputStream().write(postDataBytes, 0, postDataBytes.length);
-    
-        final String rawData = BasicMojangAPI.readData(connection.getInputStream());
+        
         final JSONArray responseData;
         try {
-            responseData = JSONParser.deserializeArray(rawData);
+            responseData = JSONParser.deserializeArray(BasicMojangAPI.readData(connection.getInputStream()));
         } catch (JSONException e) {
-            throw new IOException("Unable to parse data from the Mojang API: " + rawData, e);
+            throw new IOException("Unable to parse data from the Mojang API.", e);
         }
         
         if (connection.getResponseCode() == 400) {
@@ -265,13 +263,12 @@ public final class BasicMojangAPI {
         if (responseCode == 204) {
             return null;
         }
-    
-        final String rawData = BasicMojangAPI.readData(connection.getInputStream());
+        
         final JSONArray responseData;
         try {
-            responseData = JSONParser.deserializeArray(rawData);
+            responseData = JSONParser.deserializeArray(BasicMojangAPI.readData(connection.getInputStream()));
         } catch (JSONException e) {
-            throw new IOException("Unable to parse data from the Mojang API: " + rawData, e);
+            throw new IOException("Unable to parse data from the Mojang API.", e);
         }
         if (responseData == null) {
             return null;
