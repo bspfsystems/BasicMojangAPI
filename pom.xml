@@ -21,7 +21,7 @@
 
     <groupId>org.bspfsystems</groupId>
     <artifactId>basic-mojang-api</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
 
     <name>BasicMojangAPI</name>
@@ -85,7 +85,7 @@
         <dependency>
             <groupId>org.bspfsystems</groupId>
             <artifactId>simple-json</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>1.1.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
