@@ -276,7 +276,7 @@ public final class BasicMojangAPI {
         try {
             responseData = JSONParser.deserializeArray(BasicMojangAPI.readData(connection.getInputStream()));
         } catch (JSONException e) {
-            throw new IOException("Unable to parse data from the Mojang API.", e);
+            throw new IOException("Unable to parse data from the Mojang API for UUID " + uniqueId.toString() + ".", e);
         }
         if (responseData == null) {
             throw new IOException("No deserialized data returned for UUID " + uniqueId.toString() + ".");
