@@ -34,7 +34,6 @@ import org.bspfsystems.simplejson.SimpleJSONArray;
 import org.bspfsystems.simplejson.parser.JSONException;
 import org.bspfsystems.simplejson.parser.JSONParser;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a utility class to interact with basic parts of the Mojang API
@@ -81,16 +80,17 @@ public final class BasicMojangAPI {
      * 
      * @param username The username of the account to retrieve.
      * @return The {@link Account} associated with the given username, including
-     *         the case-corrected username and the {@link UUID}, or {@code null}
-     *         if there is no current account associated with the username.
-     * @throws IllegalArgumentException If the username is invalid or otherwise
-     *                                  causes a bad request to be handled.
-     * @throws IOException If there was an error while parsing the data from the
-     *                     API.
+     *         the case-corrected username and the {@link UUID}.
+     * @throws IllegalArgumentException If there was an error retrieving the
+     *                                  {@link Account} from the Mojang API.
+     * @throws IOException If there was an error retrieving the {@link Account}
+     *                     from the Mojang API.
+     * @throws SecurityException If there was an error retrieving the
+     *                           {@link Account} from the Mojang API.
      * @see BasicMojangAPI#usernameToUniqueId(String, long)
      */
-    @Nullable
-    public static Account usernameToUniqueId(@NotNull final String username) throws IllegalArgumentException, IOException {
+    @NotNull
+    public static Account usernameToUniqueId(@NotNull final String username) throws IllegalArgumentException, IOException, SecurityException {
         return BasicMojangAPI.usernameToUniqueId(username, System.currentTimeMillis());
     }
     
@@ -112,15 +112,16 @@ public final class BasicMojangAPI {
      *                  timestamp will be ignored, as the API uses the UNIX
      *                  timestamp without milliseconds.
      * @return The {@link Account} associated with the given username, including
-     *         the case-corrected username and the {@link UUID}, or {@code null}
-     *         if there is no current account associated with the username.
-     * @throws IllegalArgumentException If the username is invalid or otherwise
-     *                                  causes a bad request to be handled.
-     * @throws IOException If there was an error while parsing the data from the
-     *                     API.
+     *         the case-corrected username and the {@link UUID}..
+     * @throws IllegalArgumentException If there was an error retrieving the
+     *                                  {@link Account} from the Mojang API.
+     * @throws IOException If there was an error retrieving the {@link Account}
+     *                     from the Mojang API.
+     * @throws SecurityException If there was an error retrieving the
+     *                           {@link Account} from the Mojang API.
      */
-    @Nullable
-    public static Account usernameToUniqueId(@NotNull final String username, final long timestamp) throws IllegalArgumentException, IOException {
+    @NotNull
+    public static Account usernameToUniqueId(@NotNull final String username, final long timestamp) throws IllegalArgumentException, IOException, SecurityException {
         
         final URL url = new URL(BasicMojangAPI.BASE_URL + BasicMojangAPI.USERNAME_TO_UUID.replace("<username>", username).replace("<timestamp>", String.valueOf(timestamp / 1000L)));
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -128,21 +129,21 @@ public final class BasicMojangAPI {
         
         final int responseCode = connection.getResponseCode();
         if (responseCode == 204) {
-            return null;
+            throw new IOException("No content returned for username " + username + " at timestamp " + timestamp + ".");
         }
         
         final JSONObject responseData;
         try {
             responseData = JSONParser.deserializeObject(BasicMojangAPI.readData(connection.getInputStream()));
         } catch (JSONException e) {
-            throw new IOException("Unable to parse data from the Mojang API.", e);
+            throw new IOException("Unable to parse data from the Mojang API for username " + username + " at timestamp " + timestamp + ".", e);
         }
         if (responseData == null) {
-            return null;
+            throw new IOException("No deserialized data returned for username " + username + " at timestamp " + timestamp + ".");
         }
         
         if (responseCode == 400) {
-            throw new IllegalArgumentException(responseData.getString("errorMessage", "An invalid parameter was given."));
+            throw new IOException(responseData.getString("errorMessage", "An invalid parameter was given."));
         }
         
         return new SimpleAccount(responseData);
@@ -168,14 +169,23 @@ public final class BasicMojangAPI {
      * @param usernames The {@link List} of usernames to retrieve.
      * @return The {@link List} of {@link Account}s returned from the Mojang
      *         API.
-     * @throws IllegalArgumentException If a username is invalid or otherwise
-     *                                  causes a bad request to be handled, or 
-     *                                  there are more than 10 usernames.
-     * @throws IOException If there was an error while parsing the data from the
-     *                     API.
+     * @throws IllegalArgumentException If there was an error retrieving the
+     *                                  {@link List} of {@link Account Accounts}
+     *                                  from the Mojang API.
+     * @throws IOException If there was an error retrieving the {@link List} of
+     *                     {@link Account Accounts} from the Mojang API.
+     * @throws SecurityException If there was an error retrieving the
+     *                           {@link List} of {@link Account Accounts} from
+     *                           the Mojang API.
+     * @throws IllegalStateException If there was an error retrieving the
+     *                               {@link List} of {@link Account Accounts}
+     *                               from the Mojang API.
+     * @throws NullPointerException If there was an error retrieving the
+     *                              {@link List} of {@link Account Accounts}
+     *                              from the Mojang API.
      */
     @NotNull
-    public static List<Account> usernamesToUniqueIds(@NotNull final List<String> usernames) throws IllegalArgumentException, IOException {
+    public static List<Account> usernamesToUniqueIds(@NotNull final List<String> usernames) throws IllegalArgumentException, IOException, SecurityException, IllegalStateException, NullPointerException {
         
         if (usernames.size() > 10) {
             throw new IllegalArgumentException("You cannot request " + usernames.size() + " usernames (maximum 10).");
@@ -215,7 +225,7 @@ public final class BasicMojangAPI {
         }
         
         if (connection.getResponseCode() == 400) {
-            throw new IllegalArgumentException("An invalid username was passed in as part of the request.");
+            throw new IOException("An invalid username was passed in as part of the request.");
         }
         
         final List<Account> accounts = new ArrayList<Account>();
@@ -239,21 +249,19 @@ public final class BasicMojangAPI {
      * Gets the {@link AccountHistory} for the given {@link UUID} from the
      * Mojang API. The usernames in the {@link AccountHistory} will be
      * case-corrected.
-     * <p>
-     * If there is no Mojang account for the given {@link UUID}, {@code null}
-     * will be returned.
      * 
      * @param uniqueId The {@link UUID} of the retrieved {@link AccountHistory}.
-     * @return The retrieved {@link AccountHistory}, or {@code null} if no
-     *         Mojang account exist with the given {@link UUID}.
-     * @throws IllegalArgumentException If the {@link UUID} is invalid or
-     *                                  otherwise causes an error to occur while
-     *                                  creating the {@link AccountHistory}.
-     * @throws IOException If there was an error while parsing the data from the
-     *                     API.
+     * @return The retrieved {@link AccountHistory}.
+     * @throws IllegalArgumentException If there was an error retrieving the
+     *                                  {@link AccountHistory} from the Mojang
+     *                                  API.
+     * @throws IOException If there was an error retrieving the
+     *                     {@link AccountHistory} from the Mojang API.
+     * @throws SecurityException If there was an error retrieving the
+     *                           {@link AccountHistory} from the Mojang API.
      */
-    @Nullable
-    public static AccountHistory uniqueIdToNameHistory(@NotNull final UUID uniqueId) throws IllegalArgumentException, IOException {
+    @NotNull
+    public static AccountHistory uniqueIdToNameHistory(@NotNull final UUID uniqueId) throws IllegalArgumentException, IOException, SecurityException {
         
         final URL url = new URL(BasicMojangAPI.BASE_URL + BasicMojangAPI.UUID_TO_NAME_HISTORY.replace("<uuid>", uniqueId.toString()));
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -261,7 +269,7 @@ public final class BasicMojangAPI {
         
         final int responseCode = connection.getResponseCode();
         if (responseCode == 204) {
-            return null;
+            throw new IOException("No content returned for UUID " + uniqueId.toString() + ".");
         }
         
         final JSONArray responseData;
@@ -271,11 +279,11 @@ public final class BasicMojangAPI {
             throw new IOException("Unable to parse data from the Mojang API.", e);
         }
         if (responseData == null) {
-            return null;
+            throw new IOException("No deserialized data returned for UUID " + uniqueId.toString() + ".");
         }
         
         if (responseCode == 400) {
-            throw new IllegalArgumentException("An invalid UUID was passed in as part of the request.");
+            throw new IOException("An invalid UUID (" + uniqueId.toString() + ") was passed in as part of the request.");
         }
         
         return new SimpleAccountHistory(uniqueId, responseData);
