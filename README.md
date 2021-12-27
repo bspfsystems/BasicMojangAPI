@@ -6,7 +6,7 @@ A simple Java library for translating player's UUIDs to their name history, and 
 
 You can download the latest version of the library from [here](https://github.com/bspfsystems/BasicMojangAPI/releases/latest/).
 
-The latest release is 1.1.0.<br />
+The latest release is 1.1.1.<br />
 The latest snapshot is 1.1.1-SNAPSHOT.
 
 ## Build from Source
