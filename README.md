@@ -6,8 +6,7 @@ A simple Java library for translating player's UUIDs to their name history, and 
 
 You can download the latest version of the library from [here](https://github.com/bspfsystems/BasicMojangAPI/releases/latest/).
 
-The latest release is 1.1.2.<br />
-The latest snapshot is 1.1.2-SNAPSHOT.
+The latest version is release 1.2.0.
 
 ## Build from Source
 
@@ -49,7 +48,7 @@ Include the following in your `pom.xml` file:<br />
 <repositories>
   <repository>
     <id>sonatype-repo</id>
-    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    <url>https://oss.sonatype.org/content/repositories/releases/</url>
   </repository>
   ...
 </repositories>
@@ -60,7 +59,7 @@ Include the following in your `pom.xml` file:<br />
   <dependency>
     <groupId>org.bspfsystems</groupId>
     <artifactId>basic-mojang-api</artifactId>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.2.0</version>
     <scope>compile</scope>
   </dependency>
   ...
@@ -75,7 +74,7 @@ Include the following in your `build.gradle` file:<br />
 repositories {
     mavenCentral()
     maven {
-        url "https://oss.sonatype.org/content/repositories/snapshots/"
+        url "https://oss.sonatype.org/content/repositories/releases/"
         ...
     }
     ...
@@ -93,7 +92,7 @@ dependencies {
 Also include the following in your `gradle.properties` file:<br />
 ```
 ...
-basic_mojang_api_version = 1.1.2-SNAPSHOT
+basic_mojang_api_version = 1.2.0
 ...
 ```
 

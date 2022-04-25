@@ -1,14 +1,14 @@
-/*
+/* 
  * This file is part of the BasicMojangAPI Java library.
- *
- * Copyright 2021 BSPF Systems, LLC
- *
+ * 
+ * Copyright 2021-2022 BSPF Systems, LLC
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,12 +22,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.net.ssl.HttpsURLConnection;
 import org.bspfsystems.simplejson.JSONArray;
 import org.bspfsystems.simplejson.JSONObject;
 import org.bspfsystems.simplejson.SimpleJSONArray;
@@ -68,7 +69,7 @@ public final class BasicMojangAPI {
     /**
      * Gets the {@link Account} data, containing the case-corrected username and
      * the associated {@link UUID}. This will use the current time as the
-     * optional timestamp parameter.
+     * optional timestamp parameter, and a connection timeout of 30 seconds.
      * <p>
      * PLEASE NOTE: Since November 2020, Mojang stopped supporting the timestamp
      * parameter. If a timestamp is provided, it is effectively ignored, and the
@@ -96,8 +97,9 @@ public final class BasicMojangAPI {
     
     /**
      * Gets the {@link Account} data, containing the case-corrected username and
-     * the associated {@link UUID}. This will use the given time as the optional
-     * timestamp parameter.
+     * the associated {@link UUID}. This will use the current time as the
+     * optional timestamp parameter, the given timeout as the connection timeout
+     * limit.
      * <p>
      * PLEASE NOTE: Since November 2020, Mojang stopped supporting the timestamp
      * parameter. If a timestamp is provided, it is effectively ignored, and the
@@ -106,7 +108,37 @@ public final class BasicMojangAPI {
      * any) that is associated with the given username. Please remind Mojang to
      * fix this issue here:
      * <a href="https://bugs.mojang.com/browse/WEB-3367">WEB-3367</a>
-     *
+     * 
+     * @param username The username of the account to retrieve.
+     * @param timeout The connection timeout to use, in milliseconds.
+     * @return The {@link Account} associated with the given username, including
+     *         the case-corrected username and the {@link UUID}.
+     * @throws IllegalArgumentException If there was an error retrieving the
+     *                                  {@link Account} from the Mojang API.
+     * @throws IOException If there was an error retrieving the {@link Account}
+     *                     from the Mojang API.
+     * @throws SecurityException If there was an error retrieving the
+     *                           {@link Account} from the Mojang API.
+     * @see BasicMojangAPI#usernameToUniqueId(String, long, int)
+     */
+    @NotNull
+    public static Account usernameToUniqueId(@NotNull final String username, final int timeout) throws IllegalArgumentException, IOException, SecurityException {
+        return BasicMojangAPI.usernameToUniqueId(username, System.currentTimeMillis(), timeout);
+    }
+    
+    /**
+     * Gets the {@link Account} data, containing the case-corrected username and
+     * the associated {@link UUID}. This will use the given time as the optional
+     * timestamp parameter, and a connection timeout of 30 seconds.
+     * <p>
+     * PLEASE NOTE: Since November 2020, Mojang stopped supporting the timestamp
+     * parameter. If a timestamp is provided, it is effectively ignored, and the
+     * current time is used instead. This means that a username that has been
+     * used on multiple accounts will return only the current {@link UUID} (if
+     * any) that is associated with the given username. Please remind Mojang to
+     * fix this issue here:
+     * <a href="https://bugs.mojang.com/browse/WEB-3367">WEB-3367</a>
+     * 
      * @param username The username of the account to retrieve.
      * @param timestamp The timestamp to use. The milliseconds portion of the
      *                  timestamp will be ignored, as the API uses the UNIX
@@ -119,12 +151,47 @@ public final class BasicMojangAPI {
      *                     from the Mojang API.
      * @throws SecurityException If there was an error retrieving the
      *                           {@link Account} from the Mojang API.
+     * @see BasicMojangAPI#usernameToUniqueId(String, long, int)
      */
     @NotNull
     public static Account usernameToUniqueId(@NotNull final String username, final long timestamp) throws IllegalArgumentException, IOException, SecurityException {
+        return BasicMojangAPI.usernameToUniqueId(username, timestamp, 30000);
+    }
+    
+    /**
+     * Gets the {@link Account} data, containing the case-corrected username and
+     * the associated {@link UUID}. This will use the given time as the optional
+     * timestamp parameter, and the given timeout as the connection timeout
+     * limit.
+     * <p>
+     * PLEASE NOTE: Since November 2020, Mojang stopped supporting the timestamp
+     * parameter. If a timestamp is provided, it is effectively ignored, and the
+     * current time is used instead. This means that a username that has been
+     * used on multiple accounts will return only the current {@link UUID} (if
+     * any) that is associated with the given username. Please remind Mojang to
+     * fix this issue here:
+     * <a href="https://bugs.mojang.com/browse/WEB-3367">WEB-3367</a>
+     * 
+     * @param username The username of the account to retrieve.
+     * @param timestamp The timestamp to use. The milliseconds portion of the
+     *                  timestamp will be ignored, as the API uses the UNIX
+     *                  timestamp without milliseconds.
+     * @param timeout The connection timeout to use, in milliseconds.
+     * @return The {@link Account} associated with the given username, including
+     *         the case-corrected username and the {@link UUID}..
+     * @throws IllegalArgumentException If there was an error retrieving the
+     *                                  {@link Account} from the Mojang API.
+     * @throws IOException If there was an error retrieving the {@link Account}
+     *                     from the Mojang API.
+     * @throws SecurityException If there was an error retrieving the
+     *                           {@link Account} from the Mojang API.
+     */
+    @NotNull
+    public static Account usernameToUniqueId(@NotNull final String username, final long timestamp, final int timeout) throws IllegalArgumentException, IOException, SecurityException {
         
         final URL url = new URL(BasicMojangAPI.BASE_URL + BasicMojangAPI.USERNAME_TO_UUID.replace("<username>", username).replace("<timestamp>", String.valueOf(timestamp / 1000L)));
-        final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        final HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+        connection.setConnectTimeout(timeout);
         connection.setRequestMethod("GET");
         
         final int responseCode = connection.getResponseCode();
@@ -137,6 +204,8 @@ public final class BasicMojangAPI {
             responseData = JSONParser.deserializeObject(BasicMojangAPI.readData(connection.getInputStream()));
         } catch (JSONException e) {
             throw new IOException("Unable to parse data from the Mojang API for username " + username + " at timestamp " + timestamp + ".", e);
+        } catch (SocketTimeoutException e) {
+            throw new IOException("No account data retrieved for username " + username + " within " + timeout + " milliseconds.", e);
         }
         if (responseData == null) {
             throw new IOException("No deserialized data returned for username " + username + " at timestamp " + timestamp + ".");
@@ -152,7 +221,8 @@ public final class BasicMojangAPI {
     /**
      * Gets a {@link List} of {@link Account} data from the Mojang API, given a
      * {@link List} of usernames. The usernames in the respective
-     * {@link Account}s will be case-corrected.
+     * {@link Account}s will be case-corrected. This will use a connection
+     * timeout of 30 seconds.
      * <p>
      * The supplied {@link List} may contain duplicates (Mojang usernames are
      * unique from a case-insensitive aspect, so {@code "example"} and
@@ -183,9 +253,52 @@ public final class BasicMojangAPI {
      * @throws NullPointerException If there was an error retrieving the
      *                              {@link List} of {@link Account Accounts}
      *                              from the Mojang API.
+     * @see BasicMojangAPI#usernamesToUniqueIds(List, int)
      */
     @NotNull
     public static List<Account> usernamesToUniqueIds(@NotNull final List<String> usernames) throws IllegalArgumentException, IOException, SecurityException, IllegalStateException, NullPointerException {
+        return BasicMojangAPI.usernamesToUniqueIds(usernames, 30000);
+    }
+    
+    /**
+     * Gets a {@link List} of {@link Account} data from the Mojang API, given a
+     * {@link List} of usernames. The usernames in the respective
+     * {@link Account}s will be case-corrected. This will use the given timeout
+     * as the connection timeout limit.
+     * <p>
+     * The supplied {@link List} may contain duplicates (Mojang usernames are
+     * unique from a case-insensitive aspect, so {@code "example"} and
+     * {@code "EXAMPLE"} cannot both be used at the same time). How Mojang
+     * handles duplicates in the submitted data may change at any time.
+     * <p>
+     * Depending on how the Mojang API handles duplicates, there may or may not
+     * be duplicate {@link Account}s in the returned {@link List}.
+     * <p>
+     * The supplied {@link List} may not contain more than 10 entries, and none
+     * of the entries may be {@code null}. Otherwise, an
+     * {@link IllegalArgumentException} will be thrown.
+     * 
+     * @param usernames The {@link List} of usernames to retrieve.
+     * @param timeout The connection timeout to use, in milliseconds.
+     * @return The {@link List} of {@link Account}s returned from the Mojang
+     *         API.
+     * @throws IllegalArgumentException If there was an error retrieving the
+     *                                  {@link List} of {@link Account Accounts}
+     *                                  from the Mojang API.
+     * @throws IOException If there was an error retrieving the {@link List} of
+     *                     {@link Account Accounts} from the Mojang API.
+     * @throws SecurityException If there was an error retrieving the
+     *                           {@link List} of {@link Account Accounts} from
+     *                           the Mojang API.
+     * @throws IllegalStateException If there was an error retrieving the
+     *                               {@link List} of {@link Account Accounts}
+     *                               from the Mojang API.
+     * @throws NullPointerException If there was an error retrieving the
+     *                              {@link List} of {@link Account Accounts}
+     *                              from the Mojang API.
+     */
+    @NotNull
+    public static List<Account> usernamesToUniqueIds(@NotNull final List<String> usernames, final int timeout) throws IllegalArgumentException, IOException, SecurityException, IllegalStateException, NullPointerException {
         
         if (usernames.size() > 10) {
             throw new IllegalArgumentException("You cannot request " + usernames.size() + " usernames (maximum 10).");
@@ -209,7 +322,8 @@ public final class BasicMojangAPI {
         final byte[] postDataBytes = postDataSerialized.getBytes(StandardCharsets.UTF_8);
         
         final URL url = new URL(BasicMojangAPI.BASE_URL + BasicMojangAPI.USERNAMES_TO_UUIDS);
-        final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        final HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+        connection.setConnectTimeout(timeout);
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", BasicMojangAPI.POST_PROPERTY + "; utf-8");
         connection.setRequestProperty("Accept", BasicMojangAPI.POST_PROPERTY);
@@ -222,6 +336,8 @@ public final class BasicMojangAPI {
             responseData = JSONParser.deserializeArray(BasicMojangAPI.readData(connection.getInputStream()));
         } catch (JSONException e) {
             throw new IOException("Unable to parse data from the Mojang API.", e);
+        } catch (SocketTimeoutException e) {
+            throw new IOException("No account data retrieved for multiple usernames within " + timeout + " milliseconds.", e);
         }
         
         if (connection.getResponseCode() == 400) {
@@ -248,7 +364,7 @@ public final class BasicMojangAPI {
     /**
      * Gets the {@link AccountHistory} for the given {@link UUID} from the
      * Mojang API. The usernames in the {@link AccountHistory} will be
-     * case-corrected.
+     * case-corrected. This will use a connection timeout of 30 seconds.
      * 
      * @param uniqueId The {@link UUID} of the retrieved {@link AccountHistory}.
      * @return The retrieved {@link AccountHistory}.
@@ -259,12 +375,35 @@ public final class BasicMojangAPI {
      *                     {@link AccountHistory} from the Mojang API.
      * @throws SecurityException If there was an error retrieving the
      *                           {@link AccountHistory} from the Mojang API.
+     * @see BasicMojangAPI#uniqueIdToNameHistory(UUID, int)
      */
     @NotNull
     public static AccountHistory uniqueIdToNameHistory(@NotNull final UUID uniqueId) throws IllegalArgumentException, IOException, SecurityException {
+        return BasicMojangAPI.uniqueIdToNameHistory(uniqueId, 30000);
+    }
+    
+    /**
+     * Gets the {@link AccountHistory} for the given {@link UUID} from the
+     * Mojang API. The usernames in the {@link AccountHistory} will be
+     * case-corrected. This will use the given timeout as the connection timeout
+     * limit.
+     * 
+     * @param uniqueId The {@link UUID} of the retrieved {@link AccountHistory}.
+     * @param timeout The connection timeout to use, in milliseconds.
+     * @return The retrieved {@link AccountHistory}.
+     * @throws IllegalArgumentException If there was an error retrieving the
+     *                                  {@link AccountHistory} from the Mojang
+     *                                  API.
+     * @throws IOException If there was an error retrieving the
+     *                     {@link AccountHistory} from the Mojang API.
+     * @throws SecurityException If there was an error retrieving the
+     *                           {@link AccountHistory} from the Mojang API.
+     */
+    @NotNull
+    public static AccountHistory uniqueIdToNameHistory(@NotNull final UUID uniqueId, final int timeout) throws IllegalArgumentException, IOException, SecurityException {
         
         final URL url = new URL(BasicMojangAPI.BASE_URL + BasicMojangAPI.UUID_TO_NAME_HISTORY.replace("<uuid>", uniqueId.toString()));
-        final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        final HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         
         final int responseCode = connection.getResponseCode();
@@ -277,6 +416,9 @@ public final class BasicMojangAPI {
             responseData = JSONParser.deserializeArray(BasicMojangAPI.readData(connection.getInputStream()));
         } catch (JSONException e) {
             throw new IOException("Unable to parse data from the Mojang API for UUID " + uniqueId.toString() + ".", e);
+        }
+        catch (SocketTimeoutException e) {
+            throw new IOException("No account data retrieved for UUID " + uniqueId.toString() + " within " + timeout + " milliseconds.", e);
         }
         if (responseData == null) {
             throw new IOException("No deserialized data returned for UUID " + uniqueId.toString() + ".");

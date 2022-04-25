@@ -1,7 +1,7 @@
 <!--
   ~ This file is part of the BasicMojangAPI Java library.
   ~ 
-  ~ Copyright 2021 BSPF Systems, LLC
+  ~ Copyright 2021-2022 BSPF Systems, LLC
   ~ 
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 
     <groupId>org.bspfsystems</groupId>
     <artifactId>basic-mojang-api</artifactId>
-    <version>1.1.2</version>
+    <version>1.2.0</version>
     <packaging>jar</packaging>
 
     <name>BasicMojangAPI</name>
@@ -85,13 +85,13 @@
         <dependency>
             <groupId>org.bspfsystems</groupId>
             <artifactId>simple-json</artifactId>
-            <version>1.1.3</version>
+            <version>1.1.4</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>22.0.0</version>
+            <version>23.0.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
