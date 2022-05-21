@@ -36,7 +36,7 @@ The `.jar` file will be located in the `target/` folder.
 
 ## Developer API
 
-### Adding as a Dependency
+### Add BasicMojangAPI as a Dependency
 
 To add BasicMojangAPI as a dependency to your project, use one of the following common methods (you may use others that exist, these are the common ones):
 
