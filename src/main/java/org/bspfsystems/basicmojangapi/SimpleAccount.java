@@ -50,7 +50,18 @@ final class SimpleAccount implements Account {
         } else if (uniqueId.length() != 32) {
             throw new IllegalArgumentException("UUID data is not 32 characters long: " + uniqueId);
         }
-        this.uniqueId = BasicMojangAPI.translateUniqueId(uniqueId);
+        final StringBuilder builder = new StringBuilder();
+        builder.append(uniqueId, 0, 8);
+        builder.append("-");
+        builder.append(uniqueId, 8, 12);
+        builder.append("-");
+        builder.append(uniqueId, 12, 16);
+        builder.append("-");
+        builder.append(uniqueId, 16, 20);
+        builder.append("-");
+        builder.append(uniqueId, 20, 32);
+        
+        this.uniqueId = UUID.fromString(builder.toString());
         
         final String name = data.getString("name", null);
         if (name == null) {

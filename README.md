@@ -9,7 +9,7 @@ The specific implementations are as follows:
 ## Obtaining BasicMojangAPI
 
 You can obtain a copy of BasicMojangAPI via the following methods:
-- Download a pre-built copy from the [Releases page](https://github.com/bspfsystems/BasicMojangAPI/releases/latest/). The latest version is release 1.2.0.
+- Download a pre-built copy from the [Releases page](https://github.com/bspfsystems/BasicMojangAPI/releases/latest/). The latest version is release 1.3.0.
 - Build from source (see below).
 - Include it as a dependency in your project (see the Development API section).
 
@@ -54,7 +54,7 @@ Include the following in your `pom.xml` file:<br />
   <dependency>
     <groupId>org.bspfsystems</groupId>
     <artifactId>basic-mojang-api</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
     <scope>compile</scope>
   </dependency>
 </dependencies>
@@ -71,7 +71,7 @@ repositories {
 }
 
 dependencies {
-    implementation "org.bspfsystems:basic-mojang-api:1.2.0"
+    implementation "org.bspfsystems:basic-mojang-api:1.3.0"
 }
 ```
 
@@ -82,11 +82,18 @@ These are some basic usages of BasicMojangAPI; for a full scope of what the libr
 // All methods have the chance to throw IOExceptions
 try {
     
-    // Get the UUID of a player from the current name
-    UUID uniqueId = BasicMojangAPI.usernameToUniqueId("Dinnerbone").getUniqueId();
+    // Get the Account of a player from the current name, which contains
+    // the current name and UUID of the player
+    Account account = BasicMojangAPI.usernameToAccount("Dinnerbone");
+    UUID uniqueId = account.getUniqueId();
+    String name = account.getName();
     
-    // Get the current username of a player from their UUID
-    String name = BasicMojangAPI.uniqueIdToNameHistory(UUID.fromString("61699b2e-d327-4a01-9f1e-0ea8c3f06bc6")).getCurrentName();
+    // Get the AccountHistory of a player from their UUID, which contains
+    // the UUID, name history, and respective change times of the account names
+    AccountHistory history = BasicMojangAPI.uniqueIdToNameHistory(UUID.fromString("61699b2e-d327-4a01-9f1e-0ea8c3f06bc6"));
+    UUID uniqueId = history.getUniqueId();
+    String originalName = history.getOriginalName();
+    String currentName = history.getCurrentName();
     
 } catch (IOException e) {
     e.printStackTrace();
