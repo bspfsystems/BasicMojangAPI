@@ -200,9 +200,14 @@ public final class BasicMojangAPI {
         connection.setReadTimeout(readTimeout);
         connection.setRequestMethod("GET");
         
-        final int responseCode = connection.getResponseCode();
-        if (responseCode == 204) {
-            throw new IOException("No content returned for username " + username + " at timestamp " + timestamp + ".");
+        final int responseCode;
+        try {
+            responseCode = connection.getResponseCode();
+            if (responseCode == 204) {
+                throw new IOException("No content returned for username " + username + " at timestamp " + timestamp + ".");
+            }
+        } catch (SocketTimeoutException e) {
+            throw new IOException("No response code retrieved for username " + username + ". Connection timeout was " + connectTimeout + ", read timeout was " + readTimeout + ".", e);
         }
         
         final JSONObject responseData;
@@ -418,9 +423,14 @@ public final class BasicMojangAPI {
         connection.setReadTimeout(readTimeout);
         connection.setRequestMethod("GET");
         
-        final int responseCode = connection.getResponseCode();
-        if (responseCode == 204) {
-            throw new IOException("No content returned for UUID " + uniqueId.toString() + ".");
+        final int responseCode;
+        try {
+            responseCode = connection.getResponseCode();
+            if (responseCode == 204) {
+                throw new IOException("No content returned for UUID " + uniqueId.toString() + ".");
+            }
+        } catch (SocketTimeoutException e) {
+            throw new IOException("No response code retrieved for UUID " + uniqueId.toString() + ". Connection timeout was " + connectTimeout + ", read timeout was " + readTimeout + ".", e);
         }
         
         final JSONArray responseData;
