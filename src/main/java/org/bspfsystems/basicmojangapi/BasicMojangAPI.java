@@ -123,7 +123,6 @@ public final class BasicMojangAPI {
      *                           {@link Account} from the Mojang API.
      * @see BasicMojangAPI#usernameToAccount(String, long, int, int)
      */
-    @Deprecated
     @NotNull
     public static Account usernameToAccount(@NotNull final String username, final int connectTimeout, final int readTimeout) throws IllegalArgumentException, IOException, SecurityException {
         return BasicMojangAPI.usernameToAccount(username, System.currentTimeMillis(), connectTimeout, readTimeout);

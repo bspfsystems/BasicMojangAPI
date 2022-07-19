@@ -9,7 +9,7 @@ The specific implementations are as follows:
 ## Obtaining BasicMojangAPI
 
 You can obtain a copy of BasicMojangAPI via the following methods:
-- Download a pre-built copy from the [Releases page](https://github.com/bspfsystems/BasicMojangAPI/releases/latest/). The latest version is release 1.3.1.
+- Download a pre-built copy from the [Releases page](https://github.com/bspfsystems/BasicMojangAPI/releases/latest/). The latest version is release 1.3.2.
 - Build from source (see below).
 - Include it as a dependency in your project (see the Development API section).
 
@@ -54,7 +54,7 @@ Include the following in your `pom.xml` file:<br />
   <dependency>
     <groupId>org.bspfsystems</groupId>
     <artifactId>basic-mojang-api</artifactId>
-    <version>1.3.1</version>
+    <version>1.3.2</version>
     <scope>compile</scope>
   </dependency>
 </dependencies>
@@ -71,7 +71,7 @@ repositories {
 }
 
 dependencies {
-    implementation "org.bspfsystems:basic-mojang-api:1.3.1"
+    implementation "org.bspfsystems:basic-mojang-api:1.3.2"
 }
 ```
 
