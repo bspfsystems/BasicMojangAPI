@@ -50,7 +50,7 @@ If you are not sure, you can always redact or otherwise change the data.
 
 ### Non-Acceptable Issues
 
-Issues such as "I need help" or "It doesn't work" will not be addressed and/or will be closed with no assistance given. These type of issues do not have any meaningful details to properly address the problem. Other issues that will not be addressed and/or closed without help include (but are not limited to):
+Issues such as "I need help" or "It doesn't work" will not be addressed and/or will be closed with no assistance given. These type of issues do not have any meaningful details to properly address the problem. Other issues that will not be addressed and/or will be closed without help include (but are not limited to):
 - How to install BasicMojangAPI (explained in (README.md)[README.md])
 - How to use BasicMojangAPI as a dependency (explained in (README.md)[README.md])
 - How to create libraries
