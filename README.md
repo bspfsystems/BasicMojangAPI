@@ -44,19 +44,19 @@ To add BasicMojangAPI as a dependency to your project, use one of the following 
 Include the following in your `pom.xml` file:<br />
 ```
 <repositories>
-  <repository>
-    <id>sonatype-repo</id>
-    <url>https://oss.sonatype.org/content/repositories/releases/</url>
-  </repository>
+    <repository>
+        <id>sonatype-repo</id>
+        <url>https://oss.sonatype.org/content/repositories/releases/</url>
+    </repository>
 </repositories>
 
 <dependencies>
-  <dependency>
-    <groupId>org.bspfsystems</groupId>
-    <artifactId>basic-mojang-api</artifactId>
-    <version>1.3.2</version>
-    <scope>compile</scope>
-  </dependency>
+    <dependency>
+        <groupId>org.bspfsystems</groupId>
+        <artifactId>basic-mojang-api</artifactId>
+        <version>1.3.2</version>
+        <scope>compile</scope>
+    </dependency>
 </dependencies>
 ```
 
@@ -64,7 +64,6 @@ Include the following in your `pom.xml` file:<br />
 Include the following in your `build.gradle` file:<br />
 ```
 repositories {
-    mavenCentral()
     maven {
         url "https://oss.sonatype.org/content/repositories/releases/"
     }
