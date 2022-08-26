@@ -1,4 +1,4 @@
-# Basic MojangAPI Project
+# BasicMojangAPI
 
 A simple Java library for translating player's UUIDs to their name history, and a name to the player's UUID by using the official Mojang API. The API is documented [here](https://wiki.vg/Mojang_API). Specifically, it allows translating a player's name to their UUID, and their UUID to the name history. No other functionality from the Mojang API is implemented in this project.<br />
 The specific implementations are as follows:
