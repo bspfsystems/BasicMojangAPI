@@ -1,15 +1,17 @@
 # BasicMojangAPI
 
+_**IMPORTANT NOTE:** With Mojang's announcement that the username history API endpoint will be removed on September 13th, 2022, the UUID to Name History function of this library has been deprecated._ [Mojang Announcement](https://help.minecraft.net/hc/en-us/articles/8969841895693-Username-History-API-Removal-FAQ-) / [Web Archive Link](https://web.archive.org/web/20220908152319/https://help.minecraft.net/hc/en-us/articles/8969841895693-Username-History-API-Removal-FAQ-)
+
 A simple Java library for translating player's UUIDs to their name history, and a name to the player's UUID by using the official Mojang API. The API is documented [here](https://wiki.vg/Mojang_API). Specifically, it allows translating a player's name to their UUID, and their UUID to the name history. No other functionality from the Mojang API is implemented in this project.<br />
 The specific implementations are as follows:
 - [Username to UUID](https://wiki.vg/Mojang_API#Username_to_UUID)
 - [Usernames to UUIDs](https://wiki.vg/Mojang_API#Usernames_to_UUIDs)
-- [UUID to Name History](https://wiki.vg/Mojang_API#UUID_to_Name_History)
+- [UUID to Name History](https://wiki.vg/Mojang_API#UUID_to_Name_History) - DEPRECATED
 
 ## Obtaining BasicMojangAPI
 
 You can obtain a copy of BasicMojangAPI via the following methods:
-- Download a pre-built copy from the [Releases page](https://github.com/bspfsystems/BasicMojangAPI/releases/latest/). The latest version is release 1.3.2.
+- Download a pre-built copy from the [Releases page](https://github.com/bspfsystems/BasicMojangAPI/releases/latest/). The latest version is release 1.3.3.
 - Build from source (see below).
 - Include it as a dependency in your project (see the Development API section).
 
@@ -54,7 +56,7 @@ Include the following in your `pom.xml` file:<br />
     <dependency>
         <groupId>org.bspfsystems</groupId>
         <artifactId>basic-mojang-api</artifactId>
-        <version>1.3.2</version>
+        <version>1.3.3</version>
         <scope>compile</scope>
     </dependency>
 </dependencies>
@@ -70,7 +72,7 @@ repositories {
 }
 
 dependencies {
-    implementation "org.bspfsystems:basic-mojang-api:1.3.2"
+    implementation "org.bspfsystems:basic-mojang-api:1.3.3"
 }
 ```
 
@@ -86,6 +88,8 @@ try {
     Account account = BasicMojangAPI.usernameToAccount("Dinnerbone");
     UUID uniqueId = account.getUniqueId();
     String name = account.getName();
+    
+    // THE BELOW SECTION IS DEPRECATED
     
     // Get the AccountHistory of a player from their UUID, which contains
     // the UUID, name history, and respective change times of the account names

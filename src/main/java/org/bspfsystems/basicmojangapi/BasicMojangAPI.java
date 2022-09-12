@@ -374,6 +374,40 @@ public final class BasicMojangAPI {
     }
     
     /**
+     * Reads the data in from the given {@link InputStream} and returns the data
+     * as a {@link String}.
+     * 
+     * @param input The {@link InputStream} to read the data from.
+     * @return A {@link String} representing the data.
+     * @throws IOException If an I/O error occurs while reading in the data.
+     */
+    @NotNull
+    private static String readData(@NotNull final InputStream input) throws IOException {
+        
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        final StringBuilder builder = new StringBuilder();
+        
+        String line;
+        while ((line = reader.readLine()) != null) {
+            builder.append(line);
+        }
+        
+        return builder.toString();
+    }
+    
+    ////////////////////////
+    // DEPRECATED METHODS //
+    ////////////////////////
+    
+    /**
+     * IMPORTANT NOTE: Mojang has removed this API endpoint as of September
+     * 13th, 2022. Please see the announcement here:
+     * <a href="https://help.minecraft.net/hc/en-us/articles/8969841895693-Username-History-API-Removal-FAQ-">Mojang Announcement</a>
+     * <p>
+     * Due to the removal, this method will most likely throw an
+     * {@link Exception}, otherwise it may return an empty
+     * {@link AccountHistory}. Either way, this method should stop being used.
+     * <p>
      * Gets the {@link AccountHistory} for the given {@link UUID} from the
      * Mojang API. The usernames in the {@link AccountHistory} will be
      * case-corrected. This will use a connection timeout of 30 seconds and a
@@ -388,14 +422,24 @@ public final class BasicMojangAPI {
      *                     {@link AccountHistory} from the Mojang API.
      * @throws SecurityException If there was an error retrieving the
      *                           {@link AccountHistory} from the Mojang API.
+     * @deprecated Deprecated by Mojang
      * @see BasicMojangAPI#uniqueIdToNameHistory(UUID, int, int)
      */
+    @Deprecated
     @NotNull
     public static AccountHistory uniqueIdToNameHistory(@NotNull final UUID uniqueId) throws IllegalArgumentException, IOException, SecurityException {
         return BasicMojangAPI.uniqueIdToNameHistory(uniqueId, 30000, 30000);
     }
     
     /**
+     * IMPORTANT NOTE: Mojang has removed this API endpoint as of September
+     * 13th, 2022. Please see the announcement here:
+     * <a href="https://help.minecraft.net/hc/en-us/articles/8969841895693-Username-History-API-Removal-FAQ-">Mojang Announcement</a>
+     * <p>
+     * Due to the removal, this method will most likely throw an
+     * {@link Exception}, otherwise it may return an empty
+     * {@link AccountHistory}. Either way, this method should stop being used.
+     * <p>
      * Gets the {@link AccountHistory} for the given {@link UUID} from the
      * Mojang API. The usernames in the {@link AccountHistory} will be
      * case-corrected. This will use the given timeout as the connection timeout
@@ -412,7 +456,9 @@ public final class BasicMojangAPI {
      *                     {@link AccountHistory} from the Mojang API.
      * @throws SecurityException If there was an error retrieving the
      *                           {@link AccountHistory} from the Mojang API.
+     * @deprecated Deprecated by Mojang
      */
+    @Deprecated
     @NotNull
     public static AccountHistory uniqueIdToNameHistory(@NotNull final UUID uniqueId, final int connectTimeout, final int readTimeout) throws IllegalArgumentException, IOException, SecurityException {
         
@@ -451,32 +497,6 @@ public final class BasicMojangAPI {
         
         return new SimpleAccountHistory(uniqueId, responseData);
     }
-    
-    /**
-     * Reads the data in from the given {@link InputStream} and returns the data
-     * as a {@link String}.
-     * 
-     * @param input The {@link InputStream} to read the data from.
-     * @return A {@link String} representing the data.
-     * @throws IOException If an I/O error occurs while reading in the data.
-     */
-    @NotNull
-    private static String readData(@NotNull final InputStream input) throws IOException {
-        
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-        final StringBuilder builder = new StringBuilder();
-        
-        String line;
-        while ((line = reader.readLine()) != null) {
-            builder.append(line);
-        }
-        
-        return builder.toString();
-    }
-    
-    ////////////////////////
-    // DEPRECATED METHODS //
-    ////////////////////////
     
     /**
      * THIS METHOD IS DEPRECATED AND EXISTS ONLY TEMPORARILY FOR BACKWARDS
