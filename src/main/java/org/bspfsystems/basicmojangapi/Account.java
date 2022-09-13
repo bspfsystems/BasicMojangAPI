@@ -44,19 +44,33 @@ public interface Account {
     String getName();
     
     /**
+     * This method is being deprecated due to the name history API endpoint
+     * removal, and should no longer be used. While the endpoint removal does
+     * not directly affect this method, the changes to the overall library make
+     * this method obsolete or otherwise useless in some use cases.
+     * <p>
      * Gets if this {@link Account} is a legacy account (has not been migrated
      * to a Mojang account).
      * 
      * @return {@code true} if this {@link Account} is a legacy account,
      *         {@code false} otherwise.
+     * @deprecated
      */
+    @Deprecated
     boolean isLegacy();
     
     /**
+     * This method is being deprecated due to the name history API endpoint
+     * removal, and should no longer be used. While the endpoint removal does
+     * not directly affect this method, the changes to the overall library make
+     * this method obsolete or otherwise useless in some use cases.
+     * <p>
      * Gets if this {@link Account} is a demo account (has not been paid yet).
      * 
      * @return {@code true} if this {@link Account} is a demo account,
      *         {@code false} otherwise.
+     * @deprecated
      */
+    @Deprecated
     boolean isDemo();
 }

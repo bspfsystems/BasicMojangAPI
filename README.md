@@ -1,17 +1,17 @@
 # BasicMojangAPI
 
-_**IMPORTANT NOTE:** With Mojang's announcement that the username history API endpoint will be removed on September 13th, 2022, the UUID to Name History function of this library has been deprecated._ [Mojang Announcement](https://help.minecraft.net/hc/en-us/articles/8969841895693-Username-History-API-Removal-FAQ-) / [Web Archive Link](https://web.archive.org/web/20220908152319/https://help.minecraft.net/hc/en-us/articles/8969841895693-Username-History-API-Removal-FAQ-)
+_**IMPORTANT NOTE:** With Mojang's announcement that the username history API endpoint will be removed on September 13th, 2022, the UUID to Name History function of this library has been removed. It has been replaced with a simple UUID to (current) user name function._ [Mojang Announcement](https://help.minecraft.net/hc/en-us/articles/8969841895693-Username-History-API-Removal-FAQ-) / [Web Archive Link](https://web.archive.org/web/20220908152319/https://help.minecraft.net/hc/en-us/articles/8969841895693-Username-History-API-Removal-FAQ-)
 
-A simple Java library for translating player's UUIDs to their name history, and a name to the player's UUID by using the official Mojang API. The API is documented [here](https://wiki.vg/Mojang_API). Specifically, it allows translating a player's name to their UUID, and their UUID to the name history. No other functionality from the Mojang API is implemented in this project.<br />
+A simple Java library for translating player's UUIDs to their name history, and a name to the player's UUID by using the official Mojang API. The API is documented [here](https://wiki.vg/Mojang_API). Specifically, it allows translating a player's name to their UUID, and their UUID to their current username. No other functionality from the Mojang API is implemented in this project.<br />
 The specific implementations are as follows:
 - [Username to UUID](https://wiki.vg/Mojang_API#Username_to_UUID)
 - [Usernames to UUIDs](https://wiki.vg/Mojang_API#Usernames_to_UUIDs)
-- [UUID to Name History](https://wiki.vg/Mojang_API#UUID_to_Name_History) - DEPRECATED
+- UUID to Username (not documented)
 
 ## Obtaining BasicMojangAPI
 
 You can obtain a copy of BasicMojangAPI via the following methods:
-- Download a pre-built copy from the [Releases page](https://github.com/bspfsystems/BasicMojangAPI/releases/latest/). The latest version is release 1.3.3.
+- Download a pre-built copy from the [Releases page](https://github.com/bspfsystems/BasicMojangAPI/releases/latest/). The latest version is release 1.3.4.
 - Build from source (see below).
 - Include it as a dependency in your project (see the Development API section).
 
@@ -56,7 +56,7 @@ Include the following in your `pom.xml` file:<br />
     <dependency>
         <groupId>org.bspfsystems</groupId>
         <artifactId>basic-mojang-api</artifactId>
-        <version>1.3.3</version>
+        <version>1.3.4</version>
         <scope>compile</scope>
     </dependency>
 </dependencies>
@@ -72,7 +72,7 @@ repositories {
 }
 
 dependencies {
-    implementation "org.bspfsystems:basic-mojang-api:1.3.3"
+    implementation "org.bspfsystems:basic-mojang-api:1.3.4"
 }
 ```
 
@@ -85,18 +85,15 @@ try {
     
     // Get the Account of a player from the current name, which contains
     // the current name and UUID of the player
-    Account account = BasicMojangAPI.usernameToAccount("Dinnerbone");
-    UUID uniqueId = account.getUniqueId();
-    String name = account.getName();
+    Account dinnerboneAccount = BasicMojangAPI.usernameToAccount("Dinnerbone");
+    UUID dinnerboneId = dinnerboneAccount.getUniqueId();
+    String dinnerboneName = dinnerboneAccount.getName();
     
-    // THE BELOW SECTION IS DEPRECATED
-    
-    // Get the AccountHistory of a player from their UUID, which contains
-    // the UUID, name history, and respective change times of the account names
-    AccountHistory history = BasicMojangAPI.uniqueIdToNameHistory(UUID.fromString("61699b2e-d327-4a01-9f1e-0ea8c3f06bc6"));
-    UUID uniqueId = history.getUniqueId();
-    String originalName = history.getOriginalName();
-    String currentName = history.getCurrentName();
+    // Get the current username from a player's UUID.
+    Account jeb_Account = BasicMojangAPI.uniqueIdToAccount(UUID.fromString("853c80ef-3c37-49fd-aa49-938b674adae6"));
+    UUID jeb_Id = jeb_Account.getUniqueId();
+    String jeb_Name = jeb_Account.getName();
+
     
 } catch (IOException e) {
     e.printStackTrace();

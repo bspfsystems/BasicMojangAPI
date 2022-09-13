@@ -28,9 +28,13 @@ import org.bspfsystems.simplejson.JSONObject;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * This class has been deprecated due to the account history API endpoint
+ * removal on September 13th, 2022.
+ * <p>
  * Represents a simple implementation of an {@link AccountHistory}. This uses a
  * {@link TreeMap} internally to maintain order of the name history.
  */
+@Deprecated
 final class SimpleAccountHistory implements AccountHistory {
     
     private final UUID uniqueId;

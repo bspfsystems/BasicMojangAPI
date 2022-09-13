@@ -21,11 +21,11 @@
     
     <groupId>org.bspfsystems</groupId>
     <artifactId>basic-mojang-api</artifactId>
-    <version>1.3.3</version>
+    <version>1.3.4</version>
     <packaging>jar</packaging>
     
     <name>BasicMojangAPI</name>
-    <description>A simple Java library for translating player's name to their UUID.</description>
+    <description>A simple Java library for translating between a player's username and their UUID.</description>
     <url>https://github.com/bspfsystems/BasicMojangAPI/</url>
     <organization>
         <name>BSPF Systems, LLC</name>

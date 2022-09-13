@@ -96,6 +96,7 @@ final class SimpleAccount implements Account {
     /**
      * {@inheritDoc}
      */
+    @Deprecated
     @Override
     public boolean isLegacy() {
         return this.legacy;
@@ -104,6 +105,7 @@ final class SimpleAccount implements Account {
     /**
      * {@inheritDoc}
      */
+    @Deprecated
     @Override
     public boolean isDemo() {
         return this.demo;

@@ -24,10 +24,14 @@ import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * This class has been deprecated due to the account history API endpoint
+ * removal on September 13th, 2022.
+ * <p>
  * Represents the history of a Mojang account, including the account's
  * {@link UUID}, all of the names, and the times that the respective names were
  * changed.
  */
+@Deprecated
 public interface AccountHistory extends Iterable<Map.Entry<Long, String>> {
     
     /**
