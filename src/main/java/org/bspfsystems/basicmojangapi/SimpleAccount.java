@@ -1,7 +1,7 @@
 /* 
  * This file is part of the BasicMojangAPI Java library.
  * 
- * Copyright 2021-2022 BSPF Systems, LLC
+ * Copyright 2021-2023 BSPF Systems, LLC
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,6 @@ final class SimpleAccount implements Account {
     
     private final UUID uniqueId;
     private final String name;
-    private final boolean legacy;
-    private final boolean demo;
     
     /**
      * Constructs a new {@link Account} from the given {@link JSONObject} data
@@ -70,9 +68,6 @@ final class SimpleAccount implements Account {
             throw new IllegalArgumentException("Name data is not a valid length(" + name.length() + " - " + name + ") for UUID " + this.uniqueId.toString());
         }
         this.name = name;
-        
-        this.legacy = data.getBoolean("legacy", false);
-        this.demo = data.getBoolean("demo", false);
     }
     
     /**
@@ -91,23 +86,5 @@ final class SimpleAccount implements Account {
     @NotNull
     public String getName() {
         return this.name;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Deprecated
-    @Override
-    public boolean isLegacy() {
-        return this.legacy;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Deprecated
-    @Override
-    public boolean isDemo() {
-        return this.demo;
     }
 }

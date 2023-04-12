@@ -1,7 +1,7 @@
 /* 
  * This file is part of the BasicMojangAPI Java library.
  * 
- * Copyright 2021-2022 BSPF Systems, LLC
+ * Copyright 2021-2023 BSPF Systems, LLC
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,35 +42,4 @@ public interface Account {
      */
     @NotNull
     String getName();
-    
-    /**
-     * This method is being deprecated due to the name history API endpoint
-     * removal, and should no longer be used. While the endpoint removal does
-     * not directly affect this method, the changes to the overall library make
-     * this method obsolete or otherwise useless in some use cases.
-     * <p>
-     * Gets if this {@link Account} is a legacy account (has not been migrated
-     * to a Mojang account).
-     * 
-     * @return {@code true} if this {@link Account} is a legacy account,
-     *         {@code false} otherwise.
-     * @deprecated
-     */
-    @Deprecated
-    boolean isLegacy();
-    
-    /**
-     * This method is being deprecated due to the name history API endpoint
-     * removal, and should no longer be used. While the endpoint removal does
-     * not directly affect this method, the changes to the overall library make
-     * this method obsolete or otherwise useless in some use cases.
-     * <p>
-     * Gets if this {@link Account} is a demo account (has not been paid yet).
-     * 
-     * @return {@code true} if this {@link Account} is a demo account,
-     *         {@code false} otherwise.
-     * @deprecated
-     */
-    @Deprecated
-    boolean isDemo();
 }
