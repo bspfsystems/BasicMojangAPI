@@ -1,5 +1,7 @@
 # BasicMojangAPI
 
+## THIS REPOSITORY IS NO LONGER MAINTAINED. NO FURTHER UPDATES WILL BE MADE.
+
 A simple Java library for translating a player's UUID to their current name, and a name to the player's UUID by using the official Mojang API. The API is documented [here](https://wiki.vg/Mojang_API). No other functionality from the Mojang API is implemented in this project.<br />
 The specific implementations are as follows:
 - [Username to UUID](https://wiki.vg/Mojang_API#Username_to_UUID)
